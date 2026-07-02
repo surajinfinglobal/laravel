@@ -43,9 +43,44 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ProjectController;
+
+// Admin Authentication
+Route::get('/admin', [AdminController::class, 'showLogin'])->name('admin.login');
+Route::post('/admin', [AdminController::class, 'login'])->name('admin.login.store');
+
+// Protected Admin Routes
+Route::middleware('auth')->prefix('admin')->group(function () {
+    
+    Route::post('logout', [AdminController::class, 'logout'])
+    ->name('admin.logout');
+
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])
+        ->name('admin.dashboard');
+
+    Route::get('/users', [AdminController::class, 'users'])
+        ->name('admin.users');
+
+    Route::get('/messages', [AdminController::class, 'messages'])
+        ->name('admin.messages');
+    Route::patch('/users/{user}/status',[AuthController::class,'toggleStatus'])
+    ->name('users.toggleStatus');
+});
 
 Route::get('/', [HomeController::class, 'index']);
 
+
+Route::middleware('auth')->group(function () {
+        Route::view('/projects/upload-success', 'projects.success')
+    ->name('projects.success');
+    
+    Route::get('/projects/create', [ProjectController::class, 'create'])
+    ->name('projects.create');
+
+    Route::post('/projects/store', [ProjectController::class, 'store'])
+    ->name('projects.store');
+});
 Route::prefix('home')->group(function () {
 
 
@@ -55,7 +90,7 @@ Route::prefix('home')->group(function () {
     // Route::get('/welcome/{name}', [HomeController::class, 'welcome']);
     Route::get('/welcome', [HomeController::class, 'welcome']);
 
-    Route::get('/about', [HomeController::class, 'about']);
+
 
     Route::get('/project', [HomeController::class, 'project']);
 
@@ -81,6 +116,7 @@ Route::prefix('home')->group(function () {
     Route::post('/logout', [LogoutController::class,'logout'])
     ->name('logout');
 
+    Route::get('/about', [HomeController::class, 'about']);
    
     // Route::get('/contact',[HomeController::class,'contact']);
 

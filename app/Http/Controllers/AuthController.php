@@ -38,4 +38,12 @@ public function showLogin()
         'Account created successfully!'
          );
     }
+    public function toggleStatus(User $user)
+{
+    $user->status = !$user->status;
+
+    $user->save();
+
+    return back()->with('success','User status updated successfully.');
+}
 }

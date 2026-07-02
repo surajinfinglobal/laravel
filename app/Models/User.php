@@ -10,9 +10,15 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+   use HasFactory;
   protected $fillable = [
     'name',
+    'status',
     'email',
     'password'
 ];
+public function projects()
+{
+    return $this->hasMany(Project::class);
+}
 }

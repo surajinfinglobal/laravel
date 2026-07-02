@@ -106,7 +106,6 @@ repeat(auto-fit,minmax(320px,1fr));
 
 gap:30px;
 
-padding-bottom:100px;
 }
 
 .project-card{
@@ -218,7 +217,19 @@ border:
 <div class="logo">NOVA</div>
 </nav>
 
+<nav class="navbar">
 
+    <div class="logo">
+        Projects
+    </div>
+
+    <div class="nav-links">
+        <a href="{{ route('projects.create') }}" class="upload-btn">
+            Upload Project
+        </a>
+    </div>
+
+</nav>
 <section class="projects">
 
 <!-- Project 1 -->
@@ -346,5 +357,50 @@ GitHub
 
 </section>
 
+<style>
+ .navbar{
+    position:fixed;
+    top:120px;
+    left:50%;
+    transform:translateX(-50%);
+    width:min(1200px,92vw);
+    height:78px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:0 30px;
+
+   
+   
+    border-radius:30px;
+
+    z-index:1000;
+}
+
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.upload-btn{
+    text-decoration:none;
+    color:#fff;
+    padding:12px 24px;
+    border-radius:14px;
+
+    background:linear-gradient(135deg,#3b82f6,#8b5cf6);
+
+    font-weight:600;
+    transition:.3s;
+}
+
+.upload-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(59,130,246,.35);
+}
+</style>
 </body>
 </html>

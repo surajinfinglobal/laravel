@@ -1,4 +1,4 @@
-@extends('navbar')
+@extends('admin.navbar')
 
 @section('title','Messages')
 
@@ -66,15 +66,101 @@
         </table>
 
     </div>
-
+<div class="mt-4" pagination-wrapper>
+    {{ $contacts->links() }}
+</div>
 </div>
 
 <style>
 .container{
     width: min(1200px, 95%);
-    margin:510px auto 36px 41px; /* navbar ke niche */
+  
+}
+/* Pagination - Horizontal Layout */
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
 }
 
+.pagination {
+    display: flex !important;
+    align-items: center;
+    flex-wrap: wrap;           /* Small screen pe wrap ho sake */
+    justify-content: center;
+    gap: 6px;
+    padding: 0;
+    list-style: none;
+    margin: 0;
+}
+
+.pagination li {
+    display: inline-block;
+}
+
+/* All buttons (Prev, Numbers, Next) */
+.pagination a,
+.pagination span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    margin-top:10px;
+    height: 40px;
+    padding: 0 12px;
+    color: #cbd5e1;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 15px;
+}
+
+.pagination a:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Active page */
+.pagination .active span {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+    font-weight: 600;
+}
+
+/* Previous & Next buttons - Special styling */
+.pagination li:first-child a,
+.pagination li:last-child a {
+    padding: 0 16px;
+    font-weight: 500;
+    min-width: auto;
+}
+
+/* Disabled buttons */
+.pagination .disabled span {
+    color: #64748b;
+    cursor: not-allowed;
+    background: rgba(0, 241, 60, 0.05);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .pagination a,
+    .pagination span {
+        min-width: 36px;
+        height: 36px;
+        font-size: 14px;
+        padding: 0 10px;
+    }
+    
+    .pagination li:first-child a,
+    .pagination li:last-child a {
+        padding: 0 14px;
+    }
+}
 main{
     min-height: 100vh;
     display: flex;

@@ -1,205 +1,174 @@
-@extends('navbar')
+{{-- =========================================================================
+     DevConnect — Register Page
+     ========================================================================= --}}
+@extends('layouts.app')
 
-<!-- @section('title','Signup') -->
+@section('title', 'Create Account — DevConnect')
+
+@push('styles')
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+@endpush
 
 @section('content')
-<div class="signup-wrapper">
 
-    <div class="signup-card">
-
-        <h1>Create Account</h1>
-
-        @if(session('success'))
-             <div class="success-message">
-        {{ session('success') }}
-    </div>
-        @endif
-@if ($errors->any())
-
-    <div class="error-message">
-
-        @foreach ($errors->all() as $error)
-
-            <p>{{ $error }}</p>
-
-        @endforeach
-
-    </div>
-
-@endif
-        <form method="POST" action="{{ route('signup.store') }}">
-
-            @csrf
-
-            <div class="input-group">
-                <input class="enter"
-                    type="text"
-                    name="name"
-                    placeholder="Full Name"
-                   >
-            </div>
-
-            <div class="input-group">
-                <input class="enter"
-                    type="email"
-                    name="email"
-                    placeholder="Email Address"
-                    >
-            </div>
-
-            <div class="input-group">
-                <input class="enter"
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    >
-            </div>
-
-            <button class="btn" type="submit">
-                Create Account
-            </button>
-
-        </form>
-
-    </div>
-
+<div class="ambient-bg" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
 </div>
-<script>
-setTimeout(() => {
-    const msg = document.querySelector('.success-message');
-    if(msg){
-        msg.style.opacity = '0';
-        setTimeout(() => msg.remove(), 500);
-    }
-}, 3000);
 
-setTimeout(() => {
-    const errorMsg = document.querySelector('.error-message');
+<nav class="auth-nav">
+    <div class="container-xl">
+        <a href="{{ url('/') }}" class="brand">
+            <span>&nbsp;</span>
+           
+        </a>
+        <a href="{{ url('/') }}" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i> Back to Home
+        </a>
+    </div>
+</nav>
 
-    if(errorMsg){
+<main class="auth-wrapper">
+    <div class="container-xl">
+        <div class="auth-grid reveal in-view">
 
-        errorMsg.style.opacity = '0';
+            {{-- Left branding / visual panel --}}
+            <div class="auth-visual-panel">
+                <div class="auth-visual-brand">
+                    <span class="brand-mark"><i class="fa-solid fa-code"></i></span>
+                    <span>DevConnect</span>
+                </div>
 
-        setTimeout(() => {
-            errorMsg.remove();
-        }, 500);
-    }
+                <div class="auth-visual-quote">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <p>"Uploading projects is effortless and the community feedback pushed me to improve my code quality."</p>
+                    <div class="quote-person">Aisha Bello — Backend Developer</div>
+                </div>
 
-}, 3000);
-</script>
-<style>
+                <div class="auth-visual-stats">
+                    <div><strong>12.4k+</strong><span>Developers</span></div>
+                    <div><strong>54k+</strong><span>Likes Given</span></div>
+                    <div><strong>4.9</strong><span>Avg Rating</span></div>
+                </div>
+            </div>
 
-.error-message{
-    background: rgba(255,0,0,.15);
-    border: 1px solid rgba(255,0,0,.3);
-    color: #ffb3b3;
-    padding: 15px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-}
+            {{-- Right form panel --}}
+            <div class="auth-form-panel">
+                <h1 class="auth-heading">Create your account</h1>
+                <p class="auth-subtext">Start sharing your projects today. Already have an account? <a href="{{route('login') }}">Log in</a></p>
 
-.error-message p{
-    margin: 5px 0;
-}
-.signup-wrapper{
-    min-height:80vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-.success-message{
-    background: rgba(0,255,100,.15);
-    border: 1px solid rgba(0,255,100,.3);
-    color: #7dffb0;
-    padding: 15px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    text-align: center;
-}
-.signup-card{
+                @if ($errors->any())
+                    <div class="auth-alert">
+                        <i class="fa-solid fa-circle-exclamation"></i> Please fix the errors below and try again.
+                    </div>
+                @endif
 
-    width:450px;
+                <div class="social-auth-row">
+                    <a href="{{ url('/auth/github') }}" class="btn-social social-github">
+                        <i class="fa-brands fa-github"></i> GitHub
+                    </a>
+                    <a href="{{ url('/auth/google') }}" class="btn-social social-google">
+                        <i class="fa-brands fa-google"></i> Google
+                    </a>
+                </div>
 
-    background:
-    rgba(255,255,255,.05);
+                <div class="divider-row">
+                    <span class="line"></span>
+                    <span>or sign up with email</span>
+                    <span class="line"></span>
+                </div>
 
-    backdrop-filter:
-    blur(25px);
+                <form method="POST" action="{{ route('signup.store') }}" novalidate>
+                    @csrf
 
-    border:
-    1px solid rgba(255,255,255,.08);
+                    <div class="form-group-glass">
+                        <label for="name">Full name</label>
+                        <div class="input-wrap">
+                            <i class="fa-regular fa-user input-icon"></i>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                placeholder="Jane Doe"
+                                value="{{ old('name') }}"
+                                class="{{ $errors->has('name') ? 'is-invalid' : '' }}"
+                                required
+                                autofocus
+                            >
+                        </div>
+                        @error('name')
+                            <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </div>
 
-    border-radius:30px;
+                    <div class="form-group-glass">
+                        <label for="email">Email address</label>
+                        <div class="input-wrap">
+                            <i class="fa-regular fa-envelope input-icon"></i>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="you@example.com"
+                                value="{{ old('email') }}"
+                                class="{{ $errors->has('email') ? 'is-invalid' : '' }}"
+                                required
+                            >
+                        </div>
+                        @error('email')
+                            <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </div>
 
-    padding:40px;
-}
+                    <div class="form-group-glass">
+                        <label for="password">Password</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Create a password"
+                                class="{{ $errors->has('password') ? 'is-invalid' : '' }}"
+                                required
+                            >
+                            <button type="button" class="toggle-password" data-target="password" aria-label="Show password">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength" aria-hidden="true">
+                            <span></span><span></span><span></span><span></span>
+                        </div>
+                        @error('password')
+                            <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </div>
 
-.signup-card h1{
-    text-align:center;
-    margin-bottom:30px;
-}
+                    
 
-.input-group{
-    margin-bottom:20px;
-}
+                    <label class="terms-check">
+                        <input type="checkbox" name="terms" required>
+                        <span>I agree to DevConnect's <a href="{{ url('/terms') }}">Terms of Service</a> and <a href="{{ url('/privacy') }}">Privacy Policy</a></span>
+                    </label>
 
-.input-group .enter{
+                    <button type="submit" class="btn btn-gradient btn-auth-submit">
+                        <i class="fa-solid fa-user-plus"></i> Create Account
+                    </button>
+                </form>
+            </div>
 
-    width:100%;
+        </div>
+    </div>
+</main>
 
-    height:55px;
+@endsection
 
-    border:none;
-
-    outline:none;
-
-    border-radius:15px;
-
-    padding:0 20px;
-
-    color:white;
-
-    background:
-    rgba(255,255,255,.05);
-
-    border:
-    1px solid rgba(255,255,255,.08);
-}
-
-.btn{
-
-    width:100%;
-
-    height:55px;
-
-    border:none;
-
-    cursor:pointer;
-
-    border-radius:15px;
-
-    font-size:16px;
-
-    font-weight:600;
-
-    background:white;
-
-    color:black;
-}
-
-.success{
-
-    background:
-    rgba(0,255,100,.15);
-
-    border:
-    1px solid rgba(0,255,100,.3);
-
-    padding:15px;
-
-    border-radius:15px;
-
-    margin-bottom:20px;
-}
-
-</style>
+@push('scripts')
+    <script src="{{ asset('js/home.js') }}"> </script>
+    <script src="{{ asset('js/auth.js') }}"></script>
+@endpush

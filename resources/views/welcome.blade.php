@@ -123,7 +123,6 @@ body{
     #86c5ff,
     #ffffff);
 
-    -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
 
     margin-bottom:20px;

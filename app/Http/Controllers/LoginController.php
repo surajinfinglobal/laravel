@@ -30,7 +30,7 @@ class LoginController extends Controller
                 'email' => $request->email,
                 'password' => $request->password
             ])) {
-                return redirect('/home/welcome')
+                return redirect()->route('home')
                     ->with('success', 'Login Successful!');
             } else {
                 return back()->with(
@@ -43,10 +43,14 @@ class LoginController extends Controller
             // login failed 
         } else {
             // redirect back with error message
-            return back()->with(
-                'error',
-                'Your account has been deactivated by the administrator.'
-            );
+            if (!$user) {
+                return back()->with('error', 'User does not exist.');
+                }else if (!$user->status) {
+                        return back()->with(
+                            'error',
+                            'Your account has been deactivated by the administrator.'
+                        );
+                }
         } 
     }
 }

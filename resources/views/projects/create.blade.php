@@ -1,187 +1,79 @@
+{{-- =========================================================================
+     DevConnect — Upload Project Page
+     Fields used exactly as provided: image, github, demo, technology, status, description
+     ========================================================================= --}}
+@extends('layouts.app')
+
+@section('title', 'Upload Project — DevConnect')
+
+@push('styles')
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/upload.css') }}">
+@endpush
+
+@section('content')
+
+<div class="ambient-bg" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Project</title>
-</head>
-<style>
+<main class="upload-wrapper">
+    <div class="container-xl">
 
-body{
-    margin:0;
-    font-family:'Inter',sans-serif;
-    background:#06080d;
-    color:#fff;
-}
+        <div class="glass-card upload-card reveal in-view">
 
-.container{
-    max-width:900px;
-    margin:50px auto;
-    padding:20px;
-}
+            <div class="upload-header">
+                <span class="eyebrow"><i class="fa-solid fa-cloud-arrow-up"></i> Share Your Work</span>
+                <h1>Upload Your Project</h1>
+                <p>Add your project details below so other developers can discover, like, and rate your work.</p>
+            </div>
 
-.page-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:30px;
-}
+            @if ($errors->any())
+                <div class="auth-alert">
+                    <i class="fa-solid fa-circle-exclamation"></i> Please fix the errors below and try again.
+                </div>
+            @endif
 
-.btn-back{
-    text-decoration:none;
-    color:#fff;
-    background:#2563eb;
-    padding:10px 18px;
-    border-radius:8px;
-    font-weight:600;
-    transition:.3s;
-}
-
-.btn-back:hover{
-    background:#1d4ed8;
-}
-    .container{
-    max-width:900px;
-    margin:auto;
-    padding:40px;
-}
-
-.page-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:30px;
-}
-
-.page-header h2{
-    color:white;
-}
-
-.btn-back{
-    text-decoration:none;
-    background:#3b82f6;
-    color:#fff;
-    padding:10px 20px;
-    border-radius:8px;
-}
-
-.project-form{
-
-    background:rgba(255,255,255,.05);
-
-    backdrop-filter:blur(15px);
-
-    border:1px solid rgba(255,255,255,.08);
-
-    border-radius:18px;
-
-    padding:35px;
-
-}
-
-.form-group{
-
-    display:flex;
-
-    flex-direction:column;
-
-    margin-bottom:22px;
-
-}
-
-.form-group label{
-
-    color:white;
-
-    margin-bottom:10px;
-
-    font-weight:600;
-
-}
-
-.form-group input,
-
-.form-group textarea,
-
-.form-group select{
-
-    background:#1e293b;
-
-    border:none;
-
-    border-radius:10px;
-
-    padding:15px;
-
-    color:white;
-
-    font-size:15px;
-
-}
-
-.form-group input:focus,
-
-.form-group textarea:focus,
-
-.form-group select:focus{
-
-    outline:none;
-
-    border:1px solid #3b82f6;
-
-}
-
-.btn-upload{
-
-    width:100%;
-
-    background:#2563eb;
-
-    border:none;
-
-    padding:16px;
-
-    color:white;
-
-    font-size:18px;
-
-    border-radius:10px;
-
-    cursor:pointer;
-
-    transition:.3s;
-
-}
-
-.btn-upload:hover{
-
-    background:#1d4ed8;
-
-}
-</style>
-<body>
-<div class="container">
-    <div class="page-header">
-        <h2>Upload New Project</h2>
-        <a href="{{ url('home/project') }}" class="btn-back">← Back</a>
-    </div>
-    <form action="{{ route('projects.store') }}"
+          
+                 <form  action="{{ route('projects.store') }}"
           method="POST"
           enctype="multipart/form-data"
-          class="project-form">
+          class="upload-form">
+                @csrf
 
-        @csrf
+                <div class="form-group">
+                    <label>Project Thumbnail</label>
 
-        <div class="form-group">
+                    <div class="file-drop" id="fileDrop">
+                        <i class="fa-solid fa-image"></i>
+                        <div class="file-drop-text">Click to upload or drag and drop</div>
+                        <div class="file-drop-hint">PNG, JPG or WEBP — up to 5MB</div>
+                        <input type="file"
+                               name="image"
+                               id="image"
+                               accept="image/*">
+                    </div>
+                    <div class="file-name" id="fileName">
+                        <i class="fa-solid fa-paperclip"></i>
+                        <span id="fileNameText"></span>
+                    </div>
+                    @error('image')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </div>
+                     <div class="form-group">
             <label>Project Title</label>
             <input type="text"
                    name="title"
                    placeholder="Enter project title"
                    required>
         </div>
-
         <div class="form-group">
             <label>Category</label>
 
@@ -190,69 +82,84 @@ body{
                 <option>Mobile App</option>
                 <option>UI/UX Design</option>
                 <option>Laravel</option>
+                
+                <option>Machine Learning</option>
+                <option>Flutter</option>
+                <option>React</option>
                 <option>PHP</option>
             </select>
         </div>
+                <div class="form-group">
+                    <label>GitHub URL</label>
 
-        <div class="form-group">
-            <label>Project Thumbnail</label>
+                    <input type="url"
+                           name="github"
+                           placeholder="https://github.com/...">
+                    @error('github')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </div>
 
-            <input type="file"
-                   name="image"
-                   accept="image/*">
+                <div class="form-group">
+                    <label>Live Demo URL</label>
+
+                    <input type="url"
+                           name="demo"
+                           placeholder="https://example.com">
+                    @error('demo')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label>Technologies Used</label>
+
+                    <input type="text"
+                           name="technology"
+                           placeholder="Laravel, PHP, MySQL, Bootstrap">
+                    @error('technology')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label>Status</label>
+
+                    <select name="status">
+                        <option value="Completed">Completed</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+                    @error('status')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label>Short Description</label>
+
+                    <textarea name="description"
+                              rows="6"
+                              placeholder="Write project details..."></textarea>
+                    @error('description')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <button class="btn-upload" type="submit">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload Project
+                </button>
+
+            </form>
+
         </div>
 
-        <div class="form-group">
-            <label>GitHub URL</label>
+    </div>
+</main>
 
-            <input type="url"
-                   name="github"
-                   placeholder="https://github.com/...">
-        </div>
+@endsection
 
-        <div class="form-group">
-            <label>Live Demo URL</label>
-
-            <input type="url"
-                   name="demo"
-                   placeholder="https://example.com">
-        </div>
-
-        <div class="form-group">
-            <label>Technologies Used</label>
-
-            <input type="text"
-                   name="technology"
-                   placeholder="Laravel, PHP, MySQL, Bootstrap">
-        </div>
-
-        <div class="form-group">
-            <label>Status</label>
-
-            <select name="status">
-                <option value="Completed">Completed</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Pending">Pending</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Short Description</label>
-
-            <textarea name="description"
-                      rows="6"
-                      placeholder="Write project details..."></textarea>
-        </div>
-
-        <button class="btn-upload">
-            Upload Project
-        </button>
-
-    </form>
-
-</div>
-
-</div>
-
-</body>
-</html>
+@push('scripts')
+    <script src="{{ asset('js/home.js') }}"></script>
+    <script src="{{ asset('js/upload.js') }}"></script>
+@endpush

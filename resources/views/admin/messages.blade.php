@@ -66,9 +66,10 @@
         </table>
 
     </div>
-<div class="mt-4" pagination-wrapper>
+<div class="mt-4 custom-pagination">
     {{ $contacts->links() }}
 </div>
+
 </div>
 
 <style>
@@ -76,74 +77,107 @@
     width: min(1200px, 95%);
   
 }
-/* Pagination - Horizontal Layout */
-.pagination-wrapper {
-    display: flex;
-    justify-content: center;
-    margin-top: 30px;
+.custom-pagination{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:20px;
+    margin-top:30px;
+    flex-wrap:wrap;
+
 }
 
-.pagination {
-    display: flex !important;
-    align-items: center;
-    flex-wrap: wrap;           /* Small screen pe wrap ho sake */
-    justify-content: center;
-    gap: 6px;
-    padding: 0;
-    list-style: none;
-    margin: 0;
+.page-btn{
+
+    padding:12px 22px;
+    text-decoration:none;
+    border-radius:10px;
+    color:#fff;
+    font-weight:600;
+    transition:.3s;
+
 }
 
-.pagination li {
-    display: inline-block;
+.prev{
+
+    background:#2563eb;
+
 }
 
-/* All buttons (Prev, Numbers, Next) */
-.pagination a,
-.pagination span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 40px;
-    margin-top:10px;
-    height: 40px;
-    padding: 0 12px;
-    color: #cbd5e1;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    font-size: 15px;
+.prev:hover{
+
+    background:#2563eb;
+
 }
 
-.pagination a:hover {
-    background: rgba(255, 255, 255, 0.18);
-    color: #fff;
-    transform: translateY(-2px);
+.next{
+
+    background:#2563eb;
+
 }
 
-/* Active page */
-.pagination .active span {
-    background: #3b82f6;
-    color: white;
-    border-color: #3b82f6;
-    font-weight: 600;
+.next:hover{
+
+    background:#1d4ed8;
+
 }
 
-/* Previous & Next buttons - Special styling */
-.pagination li:first-child a,
-.pagination li:last-child a {
-    padding: 0 16px;
-    font-weight: 500;
-    min-width: auto;
+.disabled{
+
+    background:#555;
+
+    cursor:not-allowed;
+
+    opacity:.6;
+
 }
 
-/* Disabled buttons */
-.pagination .disabled span {
-    color: #64748b;
-    cursor: not-allowed;
-    background: rgba(0, 241, 60, 0.05);
+.page-numbers{
+
+    display:flex;
+
+    gap:8px;
+
+    align-items:center;
+
+}
+
+.page-number{
+    width:42px;
+    height:42px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#1f2937;
+    color:#fff;
+    text-decoration:none;
+    border-radius:10px;
+    transition:.3s;
+
+}
+
+.page-number:hover{
+
+    background:#2563eb;
+
+}
+
+.page-number.active{
+
+    background:#f59e0b;
+
+    color:#fff;
+
+    font-weight:bold;
+
+}
+
+.dots{
+
+    color:white;
+
+    padding:0 8px;
+
 }
 
 /* Mobile adjustments */

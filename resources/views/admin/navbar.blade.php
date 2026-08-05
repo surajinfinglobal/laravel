@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <title>Admin Panel</title>
-
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -161,6 +161,24 @@ width:min(1300px,94%);
 
 margin-inline:auto;
 }
+.logout {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    background: #ef4444;
+    color: white;
+    font-weight: 600;
+    transition: .3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;           /* Icon aur text ke beech space */
+}
+
+.logout:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+}
 
 </style>
 
@@ -193,34 +211,30 @@ class="{{ request()->routeIs('admin.messages') ? 'active' : '' }}">
 Messages
 </a>
 
-<a href="#">
+<a href="{{ route('admin.projects') }}"
+class="{{ request()->routeIs('admin.projects') ? 'active' : '' }}">
 Projects
 </a>
 
-<a href="#">
-Settings
+<a href="{{ route('admin.contact') }}"
+class="{{ request()->routeIs('admin.contact') ? 'active' : '' }}">
+Contact
 </a>
-
-</div>
 
 <div class="right">
 
-<div class="admin">
+    <div class="admin">
+        <i class="fa-solid fa-user" style="color: rgb(116, 192, 252);"></i> 
+        {{ Auth::user()->name }}
+    </div>
 
-<i class="fa-solid fa-user" style="color: rgb(116, 192, 252);"></i> {{ Auth::user()->name }}
-
-</div>
-
-<form method="POST" action="{{ route('admin.logout') }}">
-@csrf
-
-<button class="logout">
-
-Logout
-
-</button>
-
-</form>
+    <form method="POST" action="{{ route('admin.logout') }}">
+        @csrf
+        <button class="logout" type="submit">
+            <i class="fa-solid fa-right-from-bracket"></i> 
+            Logout
+        </button>
+    </form>
 
 </div>
 

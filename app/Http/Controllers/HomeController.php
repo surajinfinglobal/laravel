@@ -1,14 +1,30 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Project;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        return view('app');
+          $totalUsers = User::count();
+         $totalProjects = Project::count();
+
+         $phpProjects = Project::where('category', 'PHP')->count();
+         $laravelProjects = Project::where('category', 'Laravel')->count();
+         $uiuxProjects = Project::where('category', 'UI/UX Design')->count();
+         $webProjects = Project::where('category', 'Web Development')->count();
+
+         $mlProjects = Project::where('category', 'Machine Learning')->count();
+         $mobileProjects = Project::where('category', 'Mobile App')->count();
+         $reactProjects = Project::where('category', 'React')->count();
+         $flutterProjects = Project::where('category', 'Flutter')->count();
+        
+         return view('app', compact('totalUsers', 'totalProjects', 'uiuxProjects', 'phpProjects',
+          'laravelProjects', 'webProjects', 'mlProjects', 'mobileProjects', 'reactProjects','flutterProjects'));
     }
 
     public function welcome()
@@ -23,12 +39,19 @@ class HomeController extends Controller
 
     public function project()
     {
-        return view('project');
+          $projects = Project::with('user')
+        ->latest()
+        ->get();
+
+    return view('project', compact('projects'));
     }
     
     public function pricing()
     {
-        return view('pricing');
+
+        $user = Auth::user();
+        $membershipStatus = $user ? $user->plan : null;
+        return view('pricing', compact('membershipStatus'));
     }
     public function signup()
     {

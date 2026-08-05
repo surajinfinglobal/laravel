@@ -1,7 +1,7 @@
 <?php
 
 namespace Database\Seeders;
-
+use App\Models\Project;
 use App\Models\User;
 use App\Models\Contact;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -17,10 +17,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
      {
-        User::create([
-        'name' => 'Admin',
-        'email' => 'admin@gmail.com',
-        'password' => Hash::make('admin123'),
-    ]);
-    }
+    User::factory(50)->create();
+
+    Project::factory(100)->create();
+}
 }

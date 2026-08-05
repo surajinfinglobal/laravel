@@ -173,7 +173,7 @@ Project Uploaded Successfully
 </div>
 
 <button id="closeBtn">
- <a href="{{ url('home/project') }}" class="btn-back">Close</a>
+ <a href="{{ route('home') }}" class="btn-back">Close</a>
 </button>
 
 </div>

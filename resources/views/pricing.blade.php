@@ -1,330 +1,619 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{{-- =========================================================================
+     DevConnect — Pricing Page
+     Dark theme · Glassmorphism · Purple + Blue gradients · Poppins · Bootstrap 5
+     ========================================================================= --}}
+@extends('layouts.app')
 
-<title>Pricing | NOVA</title>
+@section('title', 'Pricing — DevConnect')
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/home.css') }}">
 <style>
+    /* ========== Page Hero ========== */
+    .page-hero {
+        padding: 110px 0 40px;
+        text-align: center;
+    }
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+    .page-hero .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(139, 92, 246, 0.15);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        padding: 6px 16px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        color: #c4b5fd;
+        margin-bottom: 16px;
+    }
 
-:root{
-    --bg:#06080d;
-    --glass:rgba(255,255,255,.08);
-    --border:rgba(255,255,255,.14);
-    --text:#fff;
-    --muted:#9aa4b2;
-}
+    .page-hero h1 {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
 
-body{
-    min-height:100vh;
-    font-family:'Inter',sans-serif;
-    color:white;
+    .page-hero p {
+        color: #94a3b8;
+        max-width: 560px;
+        margin: 0 auto 0;
+    }
 
-    background:
-    radial-gradient(circle at top left,
-    rgba(255,255,255,.04),
-    transparent 30%),
+    /* ========== Billing Toggle ========== */
+    .billing-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        margin: 36px 0 10px;
+    }
 
-    radial-gradient(circle at bottom right,
-    rgba(0,150,255,.08),
-    transparent 40%),
+    .billing-toggle span {
+        font-size: 0.95rem;
+        color: #94a3b8;
+        font-weight: 500;
+    }
 
-    #06080d;
-}
+    .billing-toggle span.active {
+        color: #e2e8f0;
+    }
 
-/* Navbar */
+    .toggle-switch {
+        position: relative;
+        width: 56px;
+        height: 30px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50px;
+        cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        transition: background 0.25s;
+    }
 
-.nav{
-    position:fixed;
-    top:32px;
-    left:50%;
-    transform:translateX(-50%);
-    width:min(1200px,92vw);
-    height:78px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 18px;
-    border-radius:30px;
+    .toggle-switch.active {
+        background: linear-gradient(135deg, #7c3aed, #2563eb);
+    }
 
-    background:rgba(255,255,255,.06);
-    backdrop-filter:blur(30px);
+    .toggle-switch .knob {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 22px;
+        height: 22px;
+        background: #fff;
+        border-radius: 50%;
+        transition: transform 0.25s;
+    }
 
-    border:1px solid rgba(255,255,255,.12);
+    .toggle-switch.active .knob {
+        transform: translateX(26px);
+    }
 
-    box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.2),
-    0 20px 50px rgba(0,0,0,.35);
+    .save-badge {
+        background: rgba(34, 197, 94, 0.15);
+        color: #4ade80;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 50px;
+    }
 
-    z-index:1000;
-}
+    /* ========== Pricing Cards ========== */
+    .pricing-card {
+        position: relative;
+        padding: 32px 28px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s, border-color 0.3s;
+    }
 
-.logo{
-    font-weight:700;
-    letter-spacing:4px;
-}
+    .pricing-card:hover {
+        transform: translateY(-6px);
+    }
 
-.cta{
-    height:50px;
-    padding:0 22px;
-    border:none;
-    border-radius:14px;
-    color:white;
-    cursor:pointer;
+    .pricing-card.featured {
+        border: 1px solid rgba(139, 92, 246, 0.5);
+        background: linear-gradient(160deg, rgba(124, 58, 237, 0.12), rgba(37, 99, 235, 0.08));
+    }
 
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.15);
+    .pricing-card.featured::before {
+        content: 'Most Popular';
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #7c3aed, #2563eb);
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 4px 16px;
+        border-radius: 50px;
+        white-space: nowrap;
+    }
 
-    transition:.3s;
-}
+    .plan-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #c4b5fd;
+        margin-bottom: 8px;
+    }
 
-.cta:hover{
-    transform:translateY(-3px);
-}
+    .plan-price {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+        margin-bottom: 6px;
+    }
 
-/* Hero */
+    .plan-price .currency {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #94a3b8;
+    }
 
-.hero{
-    padding-top:160px;
-    text-align:center;
-}
+    .plan-price .amount {
+        font-size: 2.8rem;
+        font-weight: 800;
+        line-height: 1;
+        background: linear-gradient(135deg, #a78bfa, #60a5fa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
 
-.hero h1{
-    font-size:clamp(50px,8vw,100px);
-    font-weight:800;
+    .plan-price .period {
+        font-size: 0.95rem;
+        color: #94a3b8;
+    }
 
-    background:linear-gradient(
-    90deg,
-    #fff,
-    #86c5ff,
-    #ffffff);
+    .plan-desc {
+        color: #94a3b8;
+        font-size: 0.9rem;
+        margin-bottom: 24px;
+    }
 
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
+    .plan-features {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 28px;
+        flex: 1;
+    }
 
-    margin-bottom:20px;
-}
+    .plan-features li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 8px 0;
+        font-size: 0.9rem;
+        color: #cbd5e1;
+    }
 
-.hero p{
-    color:var(--muted);
-    font-size:18px;
-    max-width:700px;
-    margin:auto;
-}
+    .plan-features li i {
+        color: #4ade80;
+        margin-top: 3px;
+        flex-shrink: 0;
+    }
 
-/* Pricing */
+    .plan-features li.disabled {
+        color: #64748b;
+    }
 
-.pricing{
-    width:min(1200px,92vw);
-    margin:80px auto;
+    .plan-features li.disabled i {
+        color: #475569;
+    }
 
-    display:grid;
-    grid-template-columns:
-    repeat(auto-fit,minmax(280px,1fr));
+    .pricing-card .btn {
+        width: 100%;
+        justify-content: center;
+    }
 
-    gap:30px;
-}
+    /* ========== FAQ ========== */
+    .faq-section {
+        padding: 80px 0 100px;
+    }
 
-.card{
+    .faq-item {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        margin-bottom: 12px;
+        overflow: hidden;
+    }
 
-    position:relative;
-    margin-top: 100px;
-    background:rgba(255,255,255,.05);
+    .faq-question {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 22px;
+        background: transparent;
+        border: none;
+        color: #e2e8f0;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-align: left;
+    }
 
-    backdrop-filter:blur(25px);
+    .faq-question i {
+        transition: transform 0.25s;
+        color: #94a3b8;
+    }
 
-    border:1px solid rgba(255,255,255,.08);
+    .faq-item.open .faq-question i {
+        transform: rotate(180deg);
+    }
 
-    border-radius:30px;
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
 
-    padding:35px;
+    .faq-answer-inner {
+        padding: 0 22px 18px;
+        color: #94a3b8;
+        font-size: 0.925rem;
+        line-height: 1.6;
+    }
 
-    transition:.4s;
-}
+    .faq-item.open .faq-answer {
+        max-height: 200px;
+    }
 
-.card:hover{
-    transform:
-    translateY(-10px);
-}
+    /* ========== CTA ========== */
+    .pricing-cta {
+        text-align: center;
+        padding: 60px 0 100px;
+    }
 
-.popular{
-    border:
-    1px solid rgba(134,197,255,.5);
+    .pricing-cta h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
 
-    box-shadow:
-    0 0 30px rgba(134,197,255,.15);
-}
+    .pricing-cta p {
+        color: #94a3b8;
+        margin-bottom: 28px;
+    }
 
-.badge{
+    .current-plan-badge {
+        position: absolute;
+        top: -12px;
+        right: 16px;
+        background: rgba(34, 197, 94, 0.2);
+        color: #4ade80;
+        border: 1px solid rgba(34, 197, 94, 0.35);
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 50px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
 
-    position:absolute;
-
-    top:-12px;
-    right:20px;
-
-    padding:8px 14px;
-
-    border-radius:20px;
-
-    background:#86c5ff;
-
-    color:black;
-
-    font-size:12px;
-    font-weight:700;
-}
-
-.plan{
-    font-size:28px;
-    font-weight:700;
-}
-
-.price{
-    margin:20px 0;
-}
-
-.price h2{
-    font-size:55px;
-}
-
-.price span{
-    color:var(--muted);
-}
-
-.features{
-    list-style:none;
-    margin:25px 0;
-}
-
-.features li{
-    margin-bottom:15px;
-    color:#d1d5db;
-}
-
-.btn{
-
-    width:100%;
-
-    padding:15px;
-
-    border:none;
-
-    border-radius:16px;
-
-    cursor:pointer;
-
-    font-weight:600;
-
-    background:white;
-    color:black;
-
-    transition:.3s;
-}
-
-.btn:hover{
-    transform:
-    translateY(-3px);
-}
-
+    .pricing-card button:disabled,
+    .pricing-card a[disabled] {
+        opacity: 0.7;
+        cursor: default;
+        pointer-events: none;
+    }
 </style>
-</head>
+@endpush
 
-<body>
-@extends('navbar')
-<nav class="nav">
-    <div class="logo">NOVA</div>
+@section('content')
 
-    <button class="cta">
-        Launch App
-    </button>
-</nav>
+{{-- Ambient orbs --}}
+<div class="ambient-bg" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
 
+<main>
 
+    {{-- =====================================================
+         Hero
+         ===================================================== --}}
 
-<section class="pricing">
-
-    <div class="card">
-
-        <h3 class="plan">Starter</h3>
-
-        <div class="price">
-            <h2>$0</h2>
-            <span>Forever Free</span>
+    {{-- =====================================================
+         Billing Toggle
+         ===================================================== --}}
+    <div class="container-xl">
+        <div class="billing-toggle">
+            <span class="active" id="labelMonthly">Monthly</span>
+            <div class="toggle-switch" id="billingToggle" onclick="toggleBilling()">
+                <div class="knob"></div>
+            </div>
+            <span id="labelYearly">Yearly</span>
+            <span class="save-badge">Save 20%</span>
         </div>
-
-        <ul class="features">
-            <li>✓ 1 Project</li>
-            <li>✓ Basic Analytics</li>
-            <li>✓ Community Support</li>
-            <li>✓ 1 GB Storage</li>
-        </ul>
-
-        <button class="btn">
-            Get Started
-        </button>
-
     </div>
 
-    <div class="card popular">
+    {{-- =====================================================
+         Pricing Cards
+         ===================================================== --}}
+    <section style="padding-bottom: 40px;">
+        <div class="container-xl">
+            <div class="row g-4 justify-content-center">
 
-        <div class="badge">
-            MOST POPULAR
+                {{-- Free Plan --}}
+                <div class="col-md-6 col-lg-4">
+                    <div class="glass-card pricing-card">
+                        <div class="plan-name">Free</div>
+                        <div class="plan-price">
+                            <span class="currency">$</span>
+                            <span class="amount" id="FreeAmount" data-monthly="0" data-yearly="0">0</span>
+                            <span class="period" id="FreePeriod">/mo</span>
+                        </div>
+                        <p class="plan-desc">Perfect for getting started and showcasing a few projects.</p>
+                        <ul class="plan-features">
+                            <li><i class="fa-solid fa-check"></i> Up to 3 projects</li>
+                            <li><i class="fa-solid fa-check"></i> Basic profile</li>
+                            <li><i class="fa-solid fa-check"></i> Community access</li>
+                            <li><i class="fa-solid fa-check"></i> Like & rate projects</li>
+                            <li class="disabled"><i class="fa-solid fa-xmark"></i> Analytics dashboard</li>
+                            <li class="disabled"><i class="fa-solid fa-xmark"></i> Priority listing</li>
+                            <li class="disabled"><i class="fa-solid fa-xmark"></i> Custom domain</li>
+                        </ul>
+
+                        @if(($membershipStatus ?? 'free') === 'free')
+                        <div class="current-plan-badge">Current Plan</div>
+                        <button class="btn btn-ghost" disabled>Your Current Plan</button>
+                        @else
+                        <a href="{{ url('home/payment?plan=Free&billing=monthly&amount=0') }}"
+                            class="btn btn-ghost" id="btnfree" data-plan="free">
+                            Get Started
+                        </a>
+                        @endif
+
+                    </div>
+                </div>
+
+                {{-- Pro Plan (Featured) --}}
+                <div class="col-md-6 col-lg-4">
+                    <div class="glass-card pricing-card featured">
+                        <div class="plan-name">Pro</div>
+                        <div class="plan-price">
+                            <span class="currency">$</span>
+                            <span class="amount" id="proAmount" data-monthly="12" data-yearly="20">12</span>
+
+                            <span class="period" id="proPeriod">/mo</span>
+                        </div>
+                        <p class="plan-desc">For serious builders who want more reach and insights.</p>
+                        <ul class="plan-features">
+                            <li><i class="fa-solid fa-check"></i> Unlimited projects</li>
+                            <li><i class="fa-solid fa-check"></i> Advanced profile</li>
+                            <li><i class="fa-solid fa-check"></i> Analytics dashboard</li>
+                            <li><i class="fa-solid fa-check"></i> Priority in search</li>
+                            <li><i class="fa-solid fa-check"></i> Custom project URLs</li>
+                            <li><i class="fa-solid fa-check"></i> Remove DevConnect branding</li>
+                            <li class="disabled"><i class="fa-solid fa-xmark"></i> Team collaboration</li>
+                        </ul>
+                        @if(($membershipStatus ?? '') === 'pro')
+                        <div class="current-plan-badge">Current Plan</div>
+                        <button class="btn btn-gradient" disabled>Your Current Plan</button>
+                        @else
+                        <a href="{{ url('home/payment?plan=pro&billing=monthly') }}"
+                            class="btn btn-gradient upgrade-btn"
+                            data-plan="pro"
+                            id="btnPro">
+                            Upgrade to Pro
+                        </a>
+                        @endif
+
+                    </div>
+                </div>
+
+                {{-- Team Plan --}}
+                <div class="col-md-6 col-lg-4">
+                    <div class="glass-card pricing-card">
+                        <div class="plan-name">Team</div>
+                        <div class="plan-price">
+                            <span class="currency">$</span>
+                            <span id="teamAmount" class="amount" data-monthly="29" data-yearly="45">29</span>
+                            <span class="period" id="teammonth">/mo</span>
+                        </div>
+                        <p class="plan-desc">Built for studios and teams shipping together.</p>
+                        <ul class="plan-features">
+                            <li><i class="fa-solid fa-check"></i> Everything in Pro</li>
+                            <li><i class="fa-solid fa-check"></i> Up to 10 team members</li>
+                            <li><i class="fa-solid fa-check"></i> Shared workspace</li>
+                            <li><i class="fa-solid fa-check"></i> Team analytics</li>
+                            <li><i class="fa-solid fa-check"></i> Role-based access</li>
+                            <li><i class="fa-solid fa-check"></i> Priority support</li>
+                            <li><i class="fa-solid fa-check"></i> Custom domain</li>
+                        </ul>
+                        @if(($membershipStatus ?? '') === 'team')
+                        <div class="current-plan-badge">Current Plan</div>
+                        <button class="btn btn-ghost" disabled>Your Current Plan</button>
+                        @else
+                        <a href="{{ url('home/payment?plan=team&billing=monthly') }}"
+                            class="btn btn-ghost upgrade-btn"
+                            data-plan="team"
+                            id="btnTeam">
+                            Get Team Plan
+                        </a>
+                        @endif
+                    </div>
+                </div>
+
+            </div>
         </div>
+    </section>
 
-        <h3 class="plan">Pro</h3>
+    {{-- =====================================================
+         FAQ
+         ===================================================== --}}
+    <section class="faq-section">
+        <div class="container-xl">
+            <div class="section-head-wrap text-center" style="margin-bottom: 40px;">
+                <span class="eyebrow"><i class="fa-solid fa-circle-question"></i> FAQ</span>
+                <h2 class="section-heading">Frequently Asked <span class="text-gradient">Questions</span></h2>
+            </div>
 
-        <div class="price">
-            <h2>$19</h2>
-            <span>/month</span>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            Can I switch plans anytime?
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                Yes. You can upgrade or downgrade your plan at any time. Changes take effect immediately and billing is prorated.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            Is there a free trial for Pro?
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                The Free plan is available forever. Pro and Team plans come with a 14-day free trial — no credit card required.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            What payment methods do you accept?
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                We accept all major credit cards (Visa, Mastercard, Amex) and PayPal. Invoicing is available for Team plans.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFaq(this)">
+                            Can I cancel anytime?
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                Absolutely. Cancel from your account settings with one click. You’ll keep access until the end of your billing period.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
+    </section>
 
-        <ul class="features">
-            <li>✓ Unlimited Projects</li>
-            <li>✓ Advanced Analytics</li>
-            <li>✓ Priority Support</li>
-            <li>✓ 50 GB Storage</li>
-            <li>✓ Team Collaboration</li>
-        </ul>
-
-        <button class="btn">
-            Upgrade Now
-        </button>
-
-    </div>
-
-    <div class="card">
-
-        <h3 class="plan">Enterprise</h3>
-
-        <div class="price">
-            <h2>$49</h2>
-            <span>/month</span>
+    {{-- =====================================================
+         Bottom CTA
+         ===================================================== --}}
+    <section class="pricing-cta">
+        <div class="container-xl">
+            <h2>Still have questions?</h2>
+            <p>Our team is happy to help you pick the right plan.</p>
+            <a href="{{ url('/contact') }}" class="btn btn-gradient">
+                <i class="fa-solid fa-envelope"></i> Contact Us
+            </a>
         </div>
+    </section>
 
-        <ul class="features">
-            <li>✓ Unlimited Everything</li>
-            <li>✓ Dedicated Manager</li>
-            <li>✓ API Access</li>
-            <li>✓ Custom Integrations</li>
-            <li>✓ 24/7 Support</li>
-        </ul>
+</main>
 
-        <button class="btn">
-            Contact Sales
-        </button>
+@endsection
 
-    </div>
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    $(document).ready(function() {
+        updatePlanLinks(false);
 
-</section>
+        const btnfree = "{{ url('home/payment') }}";
 
-</body>
-</html>
+        $('#btnfree').attr('href', `${btnfree}?plan=Free&billing=monthly&amount=${$('#FreeAmount').data('monthly')}`);
+    });
+
+
+    function updatePlanLinks(isYearly) {
+        const $toggle = $('#billingToggle');
+        const $labelMonthly = $('#labelMonthly');
+        const $labelYearly = $('#labelYearly');
+
+
+        const proBaseUrl = "{{ url('home/payment') }}";
+        const teamBaseUrl = "{{ url('home/payment') }}";
+
+
+
+        if (isYearly) {
+
+            $('#proAmount').text($('#proAmount').data('yearly'));
+            $('#teamAmount').text($('#teamAmount').data('yearly'));
+
+            $('#proPeriod').text('/yr');
+            $('#teammonth').text('/yr');
+
+            $('#btnPro').attr('href', `${proBaseUrl}?plan=pro&billing=yearly&amount=${$('#proAmount').data('yearly')}`);
+            $('#btnTeam').attr('href', `${teamBaseUrl}?plan=team&billing=yearly&amount=${$('#teamAmount').data('yearly')}`);
+
+        } else {
+
+
+            $('#proAmount').text($('#proAmount').data('monthly'));
+            $('#teamAmount').text($('#teamAmount').data('monthly'));
+
+            $('#proPeriod').text('/mo');
+            $('#teammonth').text('/mo');
+
+            $('#btnPro').attr('href', `${proBaseUrl}?plan=pro&billing=monthly&amount=${$('#proAmount').data('monthly')}`);
+            $('#btnTeam').attr('href', `${teamBaseUrl}?plan=team&billing=monthly&amount=${$('#teamAmount').data('monthly')}`);
+        }
+    }
+
+    function toggleBilling() {
+        const $toggle = $('#billingToggle');
+        const $labelMonthly = $('#labelMonthly');
+        const $labelYearly = $('#labelYearly');
+
+        $toggle.toggleClass('active');
+
+        const isYearly = $toggle.hasClass('active');
+
+
+        if ($toggle.hasClass('active')) {
+
+            $labelMonthly.removeClass('active');
+            $labelYearly.addClass('active');
+
+        } else {
+
+            $labelYearly.removeClass('active');
+            $labelMonthly.addClass('active');
+
+        }
+
+        // URL + amount update
+        updatePlanLinks(isYearly);
+    }
+
+    // FAQ accordion
+    function toggleFaq(btn) {
+        const item = btn.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+
+        // Close all
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+
+        // Open clicked if it was closed
+        if (!isOpen) {
+            item.classList.add('open');
+        }
+    }
+</script>
+@endpush

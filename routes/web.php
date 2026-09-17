@@ -31,22 +31,22 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/users', [AdminController::class, 'users'])
         ->name('admin.users');
 
-// AJAX search/filter ke liye
+    // AJAX search/filter ke liye
     Route::get('/display', [AdminController::class, 'display'])
-    ->name('admin.display');
+        ->name('admin.display');
 
     // Projects
     Route::get('/projects', [AdminController::class, 'projects'])
         ->name('admin.projects');
-// contact form show karne ke liye 
+    // contact form show karne ke liye 
     Route::get('/contact', [AdminController::class, 'contact'])
         ->name('admin.contact');
-        //  contact form ka data store karne ke liye 
+    //  contact form ka data store karne ke liye 
     Route::post('/contacts/store', [EmployeeController::class, 'store'])
-    ->name('contacts.store');
-     
+        ->name('contacts.store');
+
     Route::put('/users/{user}/status', [AdminController::class, 'updateStatus'])
-    ->name('users.status.update');
+        ->name('users.status.update');
 
     Route::get('/projects/data', [AdminController::class, 'projectData'])
         ->name('admin.projects.data');
@@ -54,26 +54,25 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/messages', [AdminController::class, 'messages'])
         ->name('admin.messages');
 
-Route::patch('/projects/publish-status/{id}', [ProjectController::class, 'updatePublishStatus']);
-Route::patch('/projects/visibility/{id}', [ProjectController::class, 'updateVisibility']);
+    Route::patch('/projects/publish-status/{id}', [ProjectController::class, 'updatePublishStatus']);
+    Route::patch('/projects/visibility/{id}', [ProjectController::class, 'updateVisibility']);
 
-        // delete profile user 
-    
+    // delete profile user 
+
     Route::put('/users/update/{user}', [AdminController::class, 'update'])
-    ->name('users.update');
-    
-     Route::delete('/users/{user}', [AdminController::class, 'destroy'])
-    ->name('users.destroy');
+        ->name('users.update');
 
-    Route::get('/display',[AdminController::class,'display_user']);
-       
+    Route::delete('/users/{user}', [AdminController::class, 'destroy'])
+        ->name('users.destroy');
+
+    Route::get('/display', [AdminController::class, 'display_user']);
+
 
 
     Route::delete('/move/{id}', [AdminController::class, 'move'])->name('move');
-        // searching route 
+    // searching route 
     Route::get('/projects/search', [AdminController::class, 'searchProjects'])
-    ->name('admin.projects.search');
-
+        ->name('admin.projects.search');
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -98,58 +97,75 @@ Route::middleware('auth')->group(function () {
 
 
 Route::prefix('home')->group(function () {
+    Route::post('/stripe/webhook',[PaymentController::class, 'stripeWebhook'])->name('stripe.webhook');
 
 
     Route::middleware('auth')->group(function () {
         // ye line routs ko protect karne ke liye use hui hai is function ke andar jitne routs honge vo witout log in access nahi honge 
-    
-    // Route::get('/welcome/{name}', [HomeController::class, 'welcome']);
-    Route::get('/welcome', [HomeController::class, 'welcome']);
+
+        // Route::get('/welcome/{name}', [HomeController::class, 'welcome']);
+        Route::get('/welcome', [HomeController::class, 'welcome']);
+
+        // Route::get('/project', [HomeController::class, 'project']);
+        Route::get('/project', [ProjectController::class, 'userindex'])->name('projects.userindex');
+        Route::get('/home/project/{id}', [ProjectController::class, 'usershow'])->name('project.usershow');
+
+        Route::get('/myproject', [ProjectController::class, 'myproject'])
+            ->name('/myproject');
 
 
+        Route::get('/projects/my-data', [ProjectController::class, 'myProjectData'])
+            ->name('Project.mydata');
+
+        Route::get('/pricing', [HomeController::class, 'pricing']);
+
+        Route::get('/contact', [HomeController::class, 'contact']);
+
+        Route::post('/otp/send', [AuthController::class, 'send'])
+            ->name('otp.send');
+        Route::post('/otp/verify', [AuthController::class, 'verify'])->name('otp.verify');
+
+        Route::put('/password-update-current', [AuthController::class, 'changepassword'])->name('password.update.current');
+
+        Route::get('admin/messages', [ContactController::class, 'index'])
+            ->name('messages');
+
+        Route::post('/home/contact/store', [ContactController::class, 'store'])
+            ->name('contact.store');
+
+        Route::get('/manage-password', [AuthController::class, 'change'])
+            ->name('change');
 
 
-    // Route::get('/project', [HomeController::class, 'project']);
-    Route::get('/project', [ProjectController::class, 'userindex'])->name('projects.userindex');
-    Route::get('/home/project/{id}', [ProjectController::class, 'usershow'])->name('project.usershow');
-    
-    Route::get('/myproject', [ProjectController::class, 'myproject'])
-        ->name('/myproject');
+        Route::get('/password', [AuthController::class, 'resetpassword'])
+            ->name('password.reset');
 
-        
-    Route::get('/projects/my-data', [ProjectController::class, 'myProjectData'])
-        ->name('Project.mydata');
+        // for paymnet controller 
+        Route::get('/payment', [PaymentController::class, 'index'])->name('home.payment');
 
-    Route::get('/pricing',[HomeController::class,'pricing']);
+        Route::get('/invoice/{invoice}/pdf', [PaymentController::class, 'downloadPdf'])
+            ->name('invoice.pdf');
 
-    Route::get('/contact',[HomeController::class,'contact']);
+        Route::post('/payment/process', [PaymentController::class, 'process'])
+            ->name('payment.process');
 
-    Route::get('admin/messages',[ContactController::class,'index'])
-        ->name('messages');
+        Route::get('/payment/invoice{invoice}', [PaymentController::class, 'showInvoice'])
+            ->name('invoice.show');
 
-    Route::post('/home/contact/store',[ContactController::class,'store'])
-           ->name('contact.store');
+        Route::get('/payment/stripe',[PaymentController::class, 'stripeCheckout'])
+        ->name('stripe.checkout');
 
-    // for paymnet controller 
-    Route::get('/payment', [PaymentController::class, 'index'])->name('home.payment');
+        Route::get('/payment/stripe/success',[PaymentController::class, 'stripeSuccess'])
+        ->name('stripe.success');
 
-    Route::get('/invoice/{invoice}/pdf', [PaymentController::class, 'downloadPdf'])
-    ->name('invoice.pdf');
-    
-    Route::post('/payment/process',[PaymentController::class,'process'])
-    ->name('payment.process');
-    
-    Route::get('/payment/invoice{invoice}',[PaymentController::class,'showInvoice'])
-    ->name('invoice.show');
+        Route::get('/payment/stripe/cancel',[PaymentController::class, 'stripeCancel'])
+        ->name('stripe.cancel');
 
-    Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
-
-
-    
+        Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
     });
-    
+
     Route::get('/about', [HomeController::class, 'about']);
-   
+
     // Route::get('/contact',[HomeController::class,'contact']);
 });
 

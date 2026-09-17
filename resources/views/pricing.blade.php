@@ -46,7 +46,7 @@
         align-items: center;
         justify-content: center;
         gap: 14px;
-        margin: 36px 0 10px;
+        margin: 36px 0 30px;
     }
 
     .billing-toggle span {
@@ -379,8 +379,15 @@
                         <div class="plan-name">Pro</div>
                         <div class="plan-price">
                             <span class="currency">$</span>
-                            <span class="amount" id="proAmount" data-monthly="12" data-yearly="20">12</span>
-
+                             @if(($membershipStatus ?? '') === 'pro')
+                             <span class="amount" id="proAmount" data-monthly="{{$amount}}" data-yearly="20">
+                                {{$amount}}
+                            </span>
+                            @else
+                            <span class="amount" id="proAmount" data-monthly="12" data-yearly="20">
+                                12
+                            </span>
+                            @endif
                             <span class="period" id="proPeriod">/mo</span>
                         </div>
                         <p class="plan-desc">For serious builders who want more reach and insights.</p>
@@ -414,7 +421,11 @@
                         <div class="plan-name">Team</div>
                         <div class="plan-price">
                             <span class="currency">$</span>
-                            <span id="teamAmount" class="amount" data-monthly="29" data-yearly="45">29</span>
+                             @if(($membershipStatus ?? '') === 'team')
+                            <span id="teamAmount" class="amount" data-monthly="{{$amount}}" data-yearly="45"></span>
+                            @else
+                             <span id="teamAmount" class="amount" data-monthly="29" data-yearly="45">29</span>
+                              @endif
                             <span class="period" id="teammonth">/mo</span>
                         </div>
                         <p class="plan-desc">Built for studios and teams shipping together.</p>
@@ -535,20 +546,13 @@
         updatePlanLinks(false);
 
         const btnfree = "{{ url('home/payment') }}";
-
         $('#btnfree').attr('href', `${btnfree}?plan=Free&billing=monthly&amount=${$('#FreeAmount').data('monthly')}`);
     });
 
 
     function updatePlanLinks(isYearly) {
-        const $toggle = $('#billingToggle');
-        const $labelMonthly = $('#labelMonthly');
-        const $labelYearly = $('#labelYearly');
-
-
-        const proBaseUrl = "{{ url('home/payment') }}";
-        const teamBaseUrl = "{{ url('home/payment') }}";
-
+        const stripeCheckoutUrl = "{{ route('stripe.checkout') }}";
+        const billing = isYearly ? 'yearly' : 'monthly';
 
 
         if (isYearly) {
@@ -559,8 +563,8 @@
             $('#proPeriod').text('/yr');
             $('#teammonth').text('/yr');
 
-            $('#btnPro').attr('href', `${proBaseUrl}?plan=pro&billing=yearly&amount=${$('#proAmount').data('yearly')}`);
-            $('#btnTeam').attr('href', `${teamBaseUrl}?plan=team&billing=yearly&amount=${$('#teamAmount').data('yearly')}`);
+            $('#btnPro').attr('href',`${stripeCheckoutUrl}?plan=pro&billing=yearly`);
+            $('#btnTeam').attr('href',`${stripeCheckoutUrl}?plan=team&billing=yearly`);
 
         } else {
 
@@ -571,8 +575,8 @@
             $('#proPeriod').text('/mo');
             $('#teammonth').text('/mo');
 
-            $('#btnPro').attr('href', `${proBaseUrl}?plan=pro&billing=monthly&amount=${$('#proAmount').data('monthly')}`);
-            $('#btnTeam').attr('href', `${teamBaseUrl}?plan=team&billing=monthly&amount=${$('#teamAmount').data('monthly')}`);
+            $('#btnPro').attr('href',`${stripeCheckoutUrl}?plan=pro&billing=monthly`);
+            $('#btnTeam').attr('href',`${stripeCheckoutUrl}?plan=team&billing=monthly`);
         }
     }
 
@@ -580,11 +584,20 @@
         const $toggle = $('#billingToggle');
         const $labelMonthly = $('#labelMonthly');
         const $labelYearly = $('#labelYearly');
+        const stripeCheckoutUrl = "{{ route('stripe.checkout') }}";
 
         $toggle.toggleClass('active');
 
         const isYearly = $toggle.hasClass('active');
+        $('#btnPro').attr(
+            'href',
+            `${stripeCheckoutUrl}?plan=pro&billing=${isYearly ? 'yearly' : 'monthly'}`
+        );
 
+        $('#btnTeam').attr(
+            'href',
+            `${stripeCheckoutUrl}?plan=team&billing=${isYearly ? 'yearly' : 'monthly'}`
+        );
 
         if ($toggle.hasClass('active')) {
 

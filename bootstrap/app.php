@@ -11,7 +11,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        
+        // 🚨 YAHAN CSRF EXCEPTION ADD KIYA HAI
+        $middleware->validateCsrfTokens(except: [
+            'home/stripe/webhook', // Agar 'home' prefix group ke andar hai
+        ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

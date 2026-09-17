@@ -1,6 +1,19 @@
+@php
+    $invoiceData = is_array($invoice) ? $invoice : ($invoice ? $invoice->toArray() : []);
+    $invoiceNumber = $invoiceData['invoice_number'] ?? 'N/A';
+    $paidAt = $invoiceData['paid_at'] ?? null;
+    $status = $invoiceData['status'] ?? 'paid';
+    $userName = $invoiceData['user_name'] ?? ($invoiceData['user']['name'] ?? 'Customer');
+    $userEmail = $invoiceData['user_email'] ?? ($invoiceData['user']['email'] ?? '');
+    $plan = $invoiceData['plan'] ?? 'pro';
+    $billing = $invoiceData['billing'] ?? 'monthly';
+    $paymentMethod = $invoiceData['payment_method'] ?? 'stripe';
+    $amount = (float) ($invoiceData['amount'] ?? 0);
+@endphp
+
 @extends('layouts.app')
 
-@section('title', 'Invoice ' . $invoice['invoice_number'] . ' — DevConnect')
+@section('title', 'Invoice ' . $invoice . ' — DevConnect')
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/home.css') }}">
@@ -96,46 +109,46 @@
                 </div>
                 <div class="invoice-meta">
                     <div class="label">Invoice</div>
-                    <div class="value"> #{{ $invoice['invoice_number'] }}</div>
+                    <div class="value"> #{{ $invoiceNumber }}</div>
                     <div class="label" style="margin-top:10px;">Date</div>
-                    <div class="value">{{ \Carbon\Carbon::parse($invoice['paid_at'])->format('d M Y, h:i A') }}</div>
-                    <div class="status-paid"><i class="fa-solid fa-check"></i> {{ ucfirst($invoice['status']) }}</div>
+                    <div class="value">{{ $paidAt ? \Carbon\Carbon::parse($paidAt)->format('d M Y, h:i A') : '—' }}</div>
+                    <div class="status-paid"><i class="fa-solid fa-check"></i> {{ ucfirst($status) }}</div>
                 </div>
             </div>
 
             <div style="margin-bottom:24px;">
                 <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:4px;">Billed To</div>
-                <div style="font-weight:600;color:#e2e8f0;">{{ $invoice['user_name'] }}</div>
-                <div style="font-size:0.85rem;color:#94a3b8;">{{ $invoice['user_email'] }}</div>
+                <div style="font-weight:600;color:#e2e8f0;">{{ $userName }}</div>
+                <div style="font-size:0.85rem;color:#94a3b8;">{{ $userEmail }}</div>
             </div>
 
             <div>
                 <div class="invoice-row">
                     <span>Plan</span>
-                    <span>{{ strtoupper($invoice['plan']) }}</span>
+                    <span>{{ strtoupper($plan) }}</span>
                 </div>
                 <div class="invoice-row">
                     <span>Billing Cycle</span>
-                    <span>{{ ucfirst($invoice['billing']) }}</span>
+                    <span>{{ ucfirst($billing) }}</span>
                 </div>
                 <div class="invoice-row">
                     <span>Payment Method</span>
-                    <span>{{ strtoupper($invoice['payment_method']) }}</span>
+                    <span>{{ strtoupper($paymentMethod) }}</span>
                 </div>
                 <div class="invoice-row">
                     <span>Subtotal</span>
-                    <span class="price">${{ number_format($invoice['amount'], 2) }}</span>
+                    <span class="price">${{ number_format($amount, 2) }}</span>
                 </div>
                 <div class="invoice-row total">
                     <span>Total Paid</span>
-                    <span class="price">${{ number_format($invoice['amount'], 2) }}</span>
+                    <span class="price">${{ number_format($amount, 2) }}</span>
                 </div>
             </div>
 
             <div class="invoice-footer">
                 <p>Thank you for upgrading on DevConnect.<br>This is a computer-generated invoice.</p>
                 <div class="invoice-actions">
-                    <a href="{{ route('invoice.pdf', $invoice['invoice_number']) }}"
+                    <a href="{{ route('invoice.pdf', $invoiceNumber) }}"
    class="btn btn-ghost btn-sm">
     <i class="fa-solid fa-file-pdf"></i> Download PDF
 </a>
@@ -160,7 +173,7 @@ function downloadExactBladePDF() {
     // Options configuration
     const opt = {
         margin:       10,
-        filename:     'Invoice-{{ $invoice["invoice_number"] }}.pdf',
+        filename:     'Invoice-{{ $invoiceNumber }}.pdf',
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0f172a' }, // Dark background force karne ke liye
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }

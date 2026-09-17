@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Invoice;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -50,8 +52,9 @@ class HomeController extends Controller
     {
 
         $user = Auth::user();
+        $amount = Invoice::where('user_id', $user->id)->latest('id')->value('amount'); 
         $membershipStatus = $user ? $user->plan : null;
-        return view('pricing', compact('membershipStatus'));
+        return view('pricing', compact('membershipStatus','amount'));
     }
     public function signup()
     {

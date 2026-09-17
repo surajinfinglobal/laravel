@@ -45,8 +45,8 @@
                         <a href="{{ url('/home/myproject') }}">
                             <i class="fa-regular fa-folder-open"></i> My Projects
                         </a>
-                        <a href="{{ url('/settings') }}">
-                            <i class="fa-solid fa-gear"></i> Settings
+                        <a href="{{ url('/home/manage-password') }}">
+                            <i class="fa-solid fa-lock"></i> Passwords
                         </a>
                         <hr>
                         <form method="POST" action="{{ route('logout') }}">
